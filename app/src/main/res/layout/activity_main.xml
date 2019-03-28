@@ -16,6 +16,7 @@
             android:layout_weight="10">
 
             <ListView
+                android:id="@+id/listView"
                 android:layout_width="459dp"
                 android:layout_height="match_parent" />
         </TableRow>
@@ -31,8 +32,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="20"
                 android:ems="10"
-                android:inputType="textPersonName"
-                android:text="Name" />
+                android:inputType="textPersonName" />
 
             <Button
                 android:id="@+id/buttonSenden"

@@ -4,13 +4,20 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -21,109 +28,81 @@ import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
+
+    EditText message;
+    Button senden;
+    private FirebaseAuth mAuth;
+    ListView listView;
+    boolean login;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        login = false;
+        listView = findViewById(R.id.listView);
+        message = findViewById(R.id.editTextMessage);
+        senden = findViewById(R.id.buttonSenden);
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        //updateUI(currentUser);
 
-        // init note
-        String collectionName = "Notes";
-        Note note = new Note("4711", "foo", true, true, new Date());
 
-        // init firestore db
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        // add note to firestore db
-        // https://firebase.google.com/docs/firestore/manage-data/add-data
-        db.collection(collectionName)
-                .document(String.valueOf(note.getId()))
-                .set(note)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d("firestoreDemo.set", "DocumentSnapshot successfully written!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("firestoreDemo.set", "Error writing document", e);
-                    }
-                });
+                        senden.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+                String nachricht=message.getText().toString().trim();
+                if(login==false){addUser(nachricht);}
+                
+
+
+                message.setText(null);
+            }
+        });
+
+
         }
 
-        // update note message in firestore
-        // https://firebase.google.com/docs/firestore/manage-data/add-data
-        db.collection(collectionName)
-                .document(note.getId())
-                .update("message", "bar")
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d("firestoreDemo.update", "DocumentSnapshot successfully updated!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("firestoreDemo.update", "Error updating document", e);
-                    }
-                });
+        public void addUser(String s)
+        {
+            if(s.contains("/login"))
+            {
+                // /login lukashumer test
 
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+                String[] arr = s.split(" ");
+                //User user = new User(arr[1],arr[2]);
+                String email = arr[1];
+                String password = arr[2];
+                mAuth.createUserWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    // Sign in success, update UI with the signed-in user's information
+                                    Log.d("<<<<<<<<<<<<<<<<<<", "createUserWithEmail:success");
+                                    FirebaseUser user = mAuth.getCurrentUser();
+                                    //updateUI(user);
+                                } else {
+                                    // If sign in fails, display a message to the user.
+                                    Log.w("<<<<<<<<<<<<<<<<<", "createUserWithEmail:failure", task.getException());
+                                    Toast.makeText(MainActivity.this, "Authentication failed.",
+                                            Toast.LENGTH_SHORT).show();
+                                    //updateUI(null);
+                                }
 
-        // read all data from firestore db
-        // https://firebase.google.com/docs/firestore/query-data/get-data
-        db.collection(collectionName)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Note note = document.toObject(Note.class);
-
-                                TextView tv = findViewById(R.id.textView);
-                                tv.setText(note.toString());
-
-                                Log.d("firestoreDemo.get", note.toString());
+                                // ...
                             }
-                        } else {
-                            Log.w("firestoreDemo.get", "Error getting documents.", task.getException());
-                        }
-                    }
-                });
+                        });
 
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            login = true;
+            }
         }
 
-        // delete note from firestore db
-        // https://firebase.google.com/docs/firestore/manage-data/delete-data
-//        db.collection(collectionName).document(note.getId())
-//                .delete()
-//                .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                    @Override
-//                    public void onSuccess(Void aVoid) {
-//                        Log.d("firestoreDemo.delete", "DocumentSnapshot successfully deleted!");
-//                    }
-//                })
-//                .addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//                        Log.w("firestoreDemo.delete", "Error deleting document", e);
-//                    }
-//                });
-    }
+        public void updateUI()
+        {
+
+        }
 }
+
