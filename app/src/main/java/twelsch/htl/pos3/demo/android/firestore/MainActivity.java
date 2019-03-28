@@ -45,18 +45,12 @@ public class MainActivity extends AppCompatActivity {
         senden = findViewById(R.id.buttonSenden);
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        //updateUI(currentUser);
-
-
-
-                        senden.setOnClickListener(new View.OnClickListener() {
+        senden.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                String test = "/login lukashumer@gmail.com testtest";
                 String nachricht=message.getText().toString().trim();
-                if(login==false){addUser(nachricht);}
-                
-
+                addUser(nachricht);
 
                 message.setText(null);
             }
@@ -67,14 +61,15 @@ public class MainActivity extends AppCompatActivity {
 
         public void addUser(String s)
         {
-            if(s.contains("/login"))
+            if(s.contains("/signin"))
             {
-                // /login lukashumer test
+
 
                 String[] arr = s.split(" ");
                 //User user = new User(arr[1],arr[2]);
                 String email = arr[1];
                 String password = arr[2];
+
                 mAuth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                             @Override
@@ -96,7 +91,38 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
 
+
             login = true;
+            }
+
+            else if(s.contains("/login"))
+            {
+                String[] arr = s.split(" ");
+                //User user = new User(arr[1],arr[2]);
+                String email = arr[1];
+                String password = arr[2];
+                mAuth.signInWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    // Sign in success, update UI with the signed-in user's information
+                                    Log.d(">>>>>>>>>>>>>>>>>>>>", "signInWithEmail:success");
+                                    FirebaseUser user = mAuth.getCurrentUser();
+                                    Toast.makeText(MainActivity.this,"FUNKT",Toast.LENGTH_LONG).show();
+                                    //       updateUI(user);
+                                } else {
+                                    // If sign in fails, display a message to the user.
+                                    Log.w(">>>>>>>>>>>>>>>>>>>>>>>>><", "signInWithEmail:failure", task.getException());
+                                    Toast.makeText(MainActivity.this, "Authentication failed.",
+                                            Toast.LENGTH_SHORT).show();
+                                    //         updateUI(null);
+                                }
+
+                                // ...
+                            }
+                        });
+            login=true;
             }
         }
 

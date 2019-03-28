@@ -4,29 +4,33 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 public class Note {
-
-    private String id;
+    private int id;
+    private String email;
     private String message;
-    private boolean urgent;
-    private boolean important;
-    private Date dateTime;
+    private Date date;
 
-    public Note() {}
 
-    public Note(String id, String message, boolean urgent, boolean important, Date dateTime) {
-        this.id = id;
+    public Note(int id,String email, String message, Date date) {
+        this.id=id;
+        this.email = email;
         this.message = message;
-        this.urgent = urgent;
-        this.important = important;
-        this.dateTime = dateTime;
+        this.date = date;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getMessage() {
@@ -37,38 +41,16 @@ public class Note {
         this.message = message;
     }
 
-    public boolean isUrgent() {
-        return urgent;
+    public Date getDate() {
+        return date;
     }
 
-    public void setUrgent(boolean urgent) {
-        this.urgent = urgent;
+    public void setDate(Date date) {
+        this.date = date;
     }
 
-    public boolean isImportant() {
-        return important;
-    }
-
-    public void setImportant(boolean important) {
-        this.important = important;
-    }
-
-    public Date getDateTime() {
-        return dateTime;
-    }
-
-    public void setDateTime(Date dateTime) {
-        this.dateTime = dateTime;
-    }
-
-    @Override
-    public String toString() {
-        return "Note{" +
-                "id=" + id +
-                ", message='" + message + '\'' +
-                ", urgent=" + urgent +
-                ", important=" + important +
-                ", dateTime=" + dateTime +
-                '}';
+    public String myString()
+    {
+        return date.getHours()+":"+date.getMinutes();
     }
 }
