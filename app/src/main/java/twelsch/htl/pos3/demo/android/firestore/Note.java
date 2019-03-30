@@ -4,24 +4,27 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 public class Note {
-    private int id;
+    private String id;
     private String email;
     private String message;
-    private Date date;
+    private LocalDateTime date;
 
 
-    public Note(int id,String email, String message, Date date) {
+    public Note(String id,
+                String email, String message, LocalDateTime date) {
         this.id=id;
         this.email = email;
         this.message = message;
         this.date = date;
     }
 
-    public int getId() {
+
+
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -41,16 +44,16 @@ public class Note {
         this.message = message;
     }
 
-    public Date getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 
     public String myString()
     {
-        return date.getHours()+":"+date.getMinutes();
+        return date.getHour()+":"+date.getMinute();
     }
 }
